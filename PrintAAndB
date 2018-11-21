@@ -47,3 +47,91 @@ public class ThreadPrintDemo3{
 }
 
 2. use wait and notify
+
+public class DigitPrinterExample {
+
+    public static void main(String[] args) {
+        Number num = new Number();
+
+        OddPriter oddPriter = new OddPriter(num);
+        EvenPrinter evenPrinter = new EvenPrinter(num);
+
+        Thread oddthread = new Thread(oddPriter);
+        Thread eventhread = new Thread(evenPrinter);
+
+        oddthread.start();
+        eventhread.start();
+    }
+}
+
+class Number{
+    int i = 0;
+    boolean flag = true;
+}
+
+/**
+ * 打印奇数得线程
+ */
+class OddPriter implements Runnable{
+    Number num;
+
+    public OddPriter(Number num) {
+        this.num = num;
+    }
+
+    @Override
+    public void run() {
+        while (num.i <= 10){
+
+            //同步锁保证一致性
+            synchronized (num){
+                if(num.flag){
+                    try{
+                        num.wait();
+                    }catch (InterruptedException e){
+                        e.printStackTrace();
+                    }
+
+                }else{
+                    System.out.println(" jishu:  " + num.i);
+                    num.i++;
+                    num.flag = true;
+                    num.notify();
+                }
+            }
+        }
+    }
+}
+
+/**
+ * 打印偶数的线程
+ */
+class EvenPrinter implements Runnable{
+    Number num;
+
+    public EvenPrinter(Number num) {
+        this.num = num;
+    }
+
+    @Override
+    public void run() {
+        while (num.i <= 10){
+            synchronized (num){
+                if (!num.flag){
+                    try {
+                        num.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }else{
+                    System.out.println(" oushu:  " + num.i);
+                    num.i++;
+                    num.flag = false;
+                    num.notify();
+                }
+            }
+        }
+    }
+}
+
+3. use 
