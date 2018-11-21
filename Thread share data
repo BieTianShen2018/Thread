@@ -1,0 +1,55 @@
+
+Thread class:
+
+class MyThread3 extends Thread {
+    private int taket=5;
+    @Override
+    public void run() {// 主方法
+        for (int i = 0; i < 10; i++) {
+            if(taket>0)
+                System.out.println("卖票 i:" +taket);
+        }
+    }
+}
+
+main method:
+
+MyThread3 mt31 = new MyThread3();
+        MyThread3 mt32 = new MyThread3();
+        MyThread3 mt33 = new MyThread3();
+        mt31.start();
+        mt32.start();
+        mt33.start();
+        
+        
+        每个线程各自卖各自的票，数据没有被共享
+        
+Runnable interface:
+
+class MyThread4 implements Runnable {
+    private int ticket=5;
+    @Override
+    public void run() {// 主方法
+        for (int i = 0; i < 10; i++) {
+            if(taket>0)
+                System.out.println("卖票 i:" + ticket);
+        }
+    }
+}
+
+main  share data 
+
+        MyThread4 mt = new MyThread4();
+        new Thread(mt).start();
+        new Thread(mt).start();
+        new Thread(mt).start();
+        
+don't  share data 
+   MyThread4 mt = new MyThread4();
+        new Thread(mt).start();
+         MyThread4 mt2 = new MyThread4();
+        new Thread(mt2).start();
+         MyThread4 mt3 = new MyThread4();
+        new Thread(mt4).start();
+  
+  http://www.cnblogs.com/bjlhx/p/7588971.html
