@@ -1,0 +1,143 @@
+package domain;
+
+public class HelloWorld {
+
+    public static void main(String[] args) {
+         Manager manager = new Manager();
+        Producter producter1 = new Producter(manager,3," producter 1");
+        Producter producter2 = new Producter(manager,2," producter 2");
+        //Producter producter3 = new Producter(manager,2," producter 3");
+
+        Consumer consumer1 = new Consumer(manager, 5, " consumer 1");
+        Consumer consumer2 = new Consumer(manager, 2, " consumer 2");
+        //Consumer consumer3 = new Consumer(manager, 1, " consumer 3");
+        //Consumer consumer4 = new Consumer(manager, 3, " consumer 4");
+        //Consumer consumer5 = new Consumer(manager, 8, " consumer 5");
+        //Consumer consumer6 = new Consumer(manager, 46, " consumer 6");
+
+        producter1.start();
+        producter2.start();
+        //producter3.start();
+
+        consumer1.start();
+        consumer2.start();
+       // consumer3.start();
+        //consumer4.start();
+        //consumer5.start();
+        //consumer6.start();
+
+    }
+
+}
+
+ class Manager {
+    private int num = 0;
+
+    public synchronized void product(int c) throws Exception {
+
+            int count = 0;
+            while (num<10) {
+                if (count == c) {
+                    System.out.println(Thread.currentThread().getName()+":stop producting, total is: " + num + ", here is wait.");
+                    // notify或者notifaAll必须在wait之前调用。
+                    this.notifyAll();
+                    count = 0;
+                    // 执行wait，立即释放锁，等待再次获得锁，在继续往下执行
+                    this.wait();
+                }
+                Thread.sleep(500);
+                // 生产出2件后
+                num++;
+                count++;
+                System.out.println(Thread.currentThread().getName()+":has producted " + count + ", total is: " + num + ", continue to product.");
+            }       
+    }
+
+    public synchronized void consume(int need) throws Exception {
+            while (num < need) {
+                System.out.println(Thread.currentThread().getName()+":need " + need + ", total is: " + num + " not enough wait for producting more product. ");
+                this.notifyAll();
+                this.wait();
+            }
+            num -= need;
+            System.out.println(Thread.currentThread().getName()+":has consumer " + need + ", remain is " + num + ", consumer leave.");
+        }
+}
+
+ class Producter extends Thread{
+    private Manager manager;
+    private int c;
+    public Producter(Manager manager,int c,String name) {
+        super();
+        this.manager = manager;
+        setName(name);
+        this.c = c;
+    }
+
+
+    @Override
+    public void run() {
+        try {
+            super.run();
+            manager.product(c);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+}
+
+ class Consumer extends Thread{
+    private Manager manager;
+    private int need;
+    public Consumer(Manager manager, int need,String name) {
+        super();
+        this.manager = manager;
+        this.need = need;
+        setName(name);
+    }
+
+    @Override
+    public void run() {
+        try {
+            super.run();
+            manager.consume(need);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+}
+
+
+
+result:
+
+ producter 1:has producted 1, total is: 1, continue to product.
+ producter 1:has producted 2, total is: 2, continue to product.
+ producter 1:has producted 3, total is: 3, continue to product.
+ producter 1:stop producting, total is: 3, here is wait.
+ consumer 2:has consumer 2, remain is 1, consumer leave.
+ consumer 1:need 5, total is: 1 not enough wait for producting more product. 
+ producter 2:has producted 1, total is: 2, continue to product.
+ producter 2:has producted 2, total is: 3, continue to product.
+ producter 2:stop producting, total is: 3, here is wait.
+ consumer 1:need 5, total is: 3 not enough wait for producting more product. 
+ producter 1:has producted 1, total is: 4, continue to product.
+ producter 1:has producted 2, total is: 5, continue to product.
+ producter 1:has producted 3, total is: 6, continue to product.
+ producter 1:stop producting, total is: 6, here is wait.
+ consumer 1:has consumer 5, remain is 1, consumer leave.
+ producter 2:has producted 1, total is: 2, continue to product.
+ producter 2:has producted 2, total is: 3, continue to product.
+ producter 2:stop producting, total is: 3, here is wait.
+ producter 1:has producted 1, total is: 4, continue to product.
+ producter 1:has producted 2, total is: 5, continue to product.
+ producter 1:has producted 3, total is: 6, continue to product.
+ producter 1:stop producting, total is: 6, here is wait.
+ producter 2:has producted 1, total is: 7, continue to product.
+ producter 2:has producted 2, total is: 8, continue to product.
+ producter 2:stop producting, total is: 8, here is wait.
+ producter 1:has producted 1, total is: 9, continue to product.
+ producter 1:has producted 2, total is: 10, continue to product.
+
