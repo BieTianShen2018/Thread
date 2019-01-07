@@ -1,0 +1,90 @@
+ThreadLocal static variate:
+
+public class ThreadLocalTest {
+    // 线程安全变量  
+    @SuppressWarnings("unchecked")  
+    public static ThreadLocal threadLocal = new ThreadLocal();  
+    
+    public static void main(String args[]) {
+        Runnable accumelatora = new Accumulatort();  
+        Thread threada = new Thread(accumelatora, "ThreadA");  
+        Thread threadb = new Thread(accumelatora, "ThreadB");  
+        threada.start();  
+        threadb.start();  
+    }
+}
+class Accumulatort implements Runnable {  
+     static int test=0;
+    @SuppressWarnings("unchecked")  
+    public void run() {  
+        // 测试线程安全  
+        ThreadLocal threadLocal = ThreadLocalTest.threadLocal;
+        
+        for (int i = 1; i <= 10; i++) {  
+            if (threadLocal.get() == null)  
+                threadLocal.set(test);  
+             //int x = ((Integer) threadLocal.get()).intValue();  
+            test += 1;  
+            threadLocal.set(test);  
+            try {  
+                Thread.sleep(1000);  
+            } catch (InterruptedException e) {  
+            }  
+            System.out.println(Thread.currentThread().getName() + "-->"  
+                    + ((Integer) threadLocal.get()).intValue());  
+        }  
+    }  
+}  
+
+result:线程不安全
+ThreadA-->1
+ThreadB-->2
+ThreadA-->3
+ThreadB-->4
+ThreadA-->5
+ThreadB-->6
+ThreadA-->7
+ThreadB-->8
+ThreadA-->9
+ThreadB-->10
+
+
+package com;  
+/** 
+ * @说明 变量安全测试 
+ * @author 崔素强 
+ */  
+public class ThreadLocalTest {  
+    // 线程安全变量  
+    @SuppressWarnings("unchecked")  
+    public static ThreadLocal threadLocal = new ThreadLocal();  
+  
+    public static void main(String[] args) {  
+        Runnable accumelatora = new Accumulatort();  
+        Thread threada = new Thread(accumelatora, "ThreadA");  
+        Thread threadb = new Thread(accumelatora, "ThreadB");  
+        threada.start();  
+        threadb.start();  
+    }  
+}  
+class Accumulatort implements Runnable {  
+    @SuppressWarnings("unchecked")  
+    public void run() {  
+        // 测试线程安全  
+        ThreadLocal threadLocal = ThreadLocalTest.threadLocal;  
+        for (int i = 1; i <= 10; i++) {  
+            if (threadLocal.get() == null)  
+                threadLocal.set(new Integer(0));  
+            int x = ((Integer) threadLocal.get()).intValue();  
+            x += 1;  
+            threadLocal.set(new Integer(x));  
+            try {  
+                Thread.sleep(1000);  
+            } catch (InterruptedException e) {  
+            }  
+            System.out.println(Thread.currentThread().getName() + "-->"  
+                    + ((Integer) threadLocal.get()).intValue());  
+        }  
+    }  
+}  
+线程安全
