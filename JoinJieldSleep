@@ -1,0 +1,63 @@
+public class ThreadLocalTest {
+    // 线程安全变量  
+    @SuppressWarnings("unchecked")  
+    public static ThreadLocal threadLocal = new ThreadLocal();  
+    
+    public static void main(String args[]) {
+        Runnable accumelatora = new Accumulatort();  
+        Thread threada = new Thread(accumelatora, "ThreadA");  
+        Thread threadb = new Thread(accumelatora, "ThreadB");  
+        threada.start(); 
+        try{
+         //threada.join();
+        }catch(Exception e){
+//异常处理
+}
+        threadb.start();  
+    }
+}
+class Accumulatort implements Runnable {  
+     static int test=0;
+    @SuppressWarnings("unchecked")  
+    public void run() {  
+        // 测试线程安全  
+        ThreadLocal threadLocal = ThreadLocalTest.threadLocal;
+        
+        for (int i = 1; i <= 10; i++) {  
+            if (threadLocal.get() == null)  
+                threadLocal.set(test);  
+             //int x = ((Integer) threadLocal.get()).intValue();  
+            test += 1;  
+            threadLocal.set(test);  
+            
+            try {  
+                Thread.yield();
+                //Thread.sleep(1000);  
+            } catch (Exception e) {  
+            }  
+            System.out.println(Thread.currentThread().getName() + "-->"  
+                    + ((Integer) threadLocal.get()).intValue());  
+        }  
+    }  
+}  
+join / Yield: 也就是交出CPU一段时间(其他同样的优先级或者更高优先级的线程可以获取到运行的机会)；不会释放锁资源. sleep 随机输出。
+ThreadA-->1
+ThreadA-->2
+ThreadA-->3
+ThreadA-->4
+ThreadA-->5
+ThreadA-->6
+ThreadA-->7
+ThreadA-->8
+ThreadA-->9
+ThreadA-->10
+ThreadB-->11
+ThreadB-->12
+ThreadB-->13
+ThreadB-->14
+ThreadB-->15
+ThreadB-->16
+ThreadB-->17
+ThreadB-->18
+ThreadB-->19
+ThreadB-->20
