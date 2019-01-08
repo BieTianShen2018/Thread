@@ -40,7 +40,11 @@ class Accumulatort implements Runnable {
         }  
     }  
 }  
-join / Yield: 也就是交出CPU一段时间(其他同样的优先级或者更高优先级的线程可以获取到运行的机会)；不会释放锁资源. sleep 随机输出。
+join / Yield: yield 方法(static方法，只会让给优先级比他高的线程)：暂停自己，执行别的线程，暂停之后获取cpu执行权之后再次执行；
+不会释放锁资源. 
+join 方法，合并线程，比如说在 main 方法里面调用了 thread的join，那么就是一条线程执行了，
+sleep sleep方法(不释放锁，不管优先级)：当前线程睡眠，有时间参数的时候，时间过了之后再次进入就绪状态
+
 ThreadA-->1
 ThreadA-->2
 ThreadA-->3
