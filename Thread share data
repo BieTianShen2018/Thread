@@ -14,7 +14,7 @@ class MyThread3 extends Thread {
 
 main method:
 
-MyThread3 mt31 = new MyThread3();
+        MyThread3 mt31 = new MyThread3();
         MyThread3 mt32 = new MyThread3();
         MyThread3 mt33 = new MyThread3();
         mt31.start();
@@ -52,4 +52,4 @@ don't  share data
          MyThread4 mt3 = new MyThread4();
         new Thread(mt4).start();
   
-  http://www.cnblogs.com/bjlhx/p/7588971.html
+  http://www.cnblogs.com/bjlhx/p/7588971.html (错误 都能共享数据)
