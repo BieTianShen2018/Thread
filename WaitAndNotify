@@ -13,7 +13,7 @@ public class Test1{
 
 		@Override
 			public void run() {
-			// 由于这里的Thread1和下面的Thread2内部run方法要用同一对象作为监视器，我们这里不能用this，
+			// 由于这里的Thread1和下面的Thread2内部run方法要用同一对象作为监视器，我们这里不能用this，222
 			//因为在Thread2里面的this和这个Thread1的this不是同一个对象。我们用MultiThread.class这个字节码对象，当前虚拟机里引用这个变量时，指向的都是同一个对象。
 			synchronized (Test1.class) {
 
